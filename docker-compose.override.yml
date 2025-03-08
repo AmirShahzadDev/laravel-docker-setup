@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Laravel PHP service
   app:
@@ -35,7 +33,7 @@ services:
     ports:
       - "${POSTGRES_PORT:-5432}:5432" # Expose PostgreSQL port directly for database tools
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
       - ./docker/postgres/postgresql.conf:/etc/postgresql/postgresql.conf
     command: postgres -c config_file=/etc/postgresql/postgresql.conf
     environment:
@@ -54,6 +52,7 @@ services:
 
   # Node.js service for frontend development
   node:
+    image: node:18-alpine
     ports:
       - "${NODE_PORT:-5173}:5173"
     volumes:
