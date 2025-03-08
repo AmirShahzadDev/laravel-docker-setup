@@ -1,0 +1,126 @@
+# Default values if environment variables are not set
+# ${NGINX_CLIENT_MAX_BODY_SIZE:-100M} will use the env var if set, otherwise default to 100M
+
+# Global configuration
+client_max_body_size ${NGINX_CLIENT_MAX_BODY_SIZE:-100M};
+server_tokens off;
+
+# Upstream definitions for PHP-FPM servers for each project
+upstream project1-php-fpm {
+    server project1-app:${PHP_FPM_PORT:-9000};
+}
+
+upstream project2-php-fpm {
+    server project2-app:${PHP_FPM_PORT:-9000};
+}
+
+upstream project3-php-fpm {
+    server project3-app:${PHP_FPM_PORT:-9000};
+}
+
+# Default PHP-FPM upstream (fallback)
+upstream php-fpm {
+    server ${PHP_FPM_HOST:-php}:${PHP_FPM_PORT:-9000};
+}
+
+# Default server configuration - redirect to HTTPS if needed
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name ${DEFAULT_SERVER_NAME:-localhost};
+    
+    # Optional HTTPS redirect
+    # if ($http_x_forwarded_proto != 'https') {
+    #     return 301 https://$host$request_uri;
+    # }
+    
+    # Default project location
+    root /var/www/html/projects/${DEFAULT_PROJECT:-default}/public;
+    index index.php index.html;
+    
+    # Include common Laravel configuration
+    include /etc/nginx/conf.d/laravel-common.conf;
+    
+    location ~ \.php$ {
+        fastcgi_pass php-fpm;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+        fastcgi_read_timeout 300;
+    }
+}
+
+# Project 1 configuration
+server {
+    listen 80;
+    listen [::]:80;
+    server_name ${PROJECT1_SERVER_NAME:-project1.local};
+    
+    root /var/www/html/projects/${PROJECT1_FOLDER:-project1}/public;
+    index index.php index.html;
+    
+    # Include common Laravel configuration
+    include /etc/nginx/conf.d/laravel-common.conf;
+    
+    location ~ \.php$ {
+        fastcgi_pass project1-php-fpm;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+        fastcgi_read_timeout 300;
+    }
+    
+    # Project specific configurations can be added here
+    ${PROJECT1_EXTRA_CONFIG:-}
+}
+
+# Project 2 configuration
+server {
+    listen 80;
+    listen [::]:80;
+    server_name ${PROJECT2_SERVER_NAME:-project2.local};
+    
+    root /var/www/html/projects/${PROJECT2_FOLDER:-project2}/public;
+    index index.php index.html;
+    
+    # Include common Laravel configuration
+    include /etc/nginx/conf.d/laravel-common.conf;
+    
+    location ~ \.php$ {
+        fastcgi_pass project2-php-fpm;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+        fastcgi_read_timeout 300;
+    }
+    
+    # Project specific configurations can be added here
+    ${PROJECT2_EXTRA_CONFIG:-}
+}
+
+# Project 3 configuration
+server {
+    listen 80;
+    listen [::]:80;
+    server_name ${PROJECT3_SERVER_NAME:-project3.local};
+    
+    root /var/www/html/projects/${PROJECT3_FOLDER:-project3}/public;
+    index index.php index.html;
+    
+    # Include common Laravel configuration
+    include /etc/nginx/conf.d/laravel-common.conf;
+    
+    location ~ \.php$ {
+        fastcgi_pass project3-php-fpm;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+        fastcgi_read_timeout 300;
+    }
+    
+    # Project specific configurations can be added here
+    ${PROJECT3_EXTRA_CONFIG:-}
+}
+
+# Add additional server blocks as needed for more projects
+
