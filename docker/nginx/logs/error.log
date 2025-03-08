@@ -229,3 +229,6 @@
 2025/03/08 10:24:19 [emerg] 1#1: "location" directive is not allowed here in /etc/nginx/conf.d/laravel-common.conf:5
 2025/03/08 10:25:19 [emerg] 1#1: "location" directive is not allowed here in /etc/nginx/conf.d/laravel-common.conf:5
 2025/03/08 10:26:19 [emerg] 1#1: "location" directive is not allowed here in /etc/nginx/conf.d/laravel-common.conf:5
+2025/03/08 10:27:20 [emerg] 1#1: "location" directive is not allowed here in /etc/nginx/conf.d/laravel-common.conf:5
+2025/03/08 10:28:20 [emerg] 1#1: "location" directive is not allowed here in /etc/nginx/conf.d/laravel-common.conf:5
+2025/03/08 10:29:20 [emerg] 1#1: "location" directive is not allowed here in /etc/nginx/conf.d/laravel-common.conf:5
